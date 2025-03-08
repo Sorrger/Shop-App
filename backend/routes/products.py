@@ -1,12 +1,16 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-from database import get_db
-from backend.crud.product import get_products, get_product_by_id, add_product, remove_product
-from schemas import CreateProducer, CreateProduct
+from database.mongo import get_mongo_db
+from schemas.product import CreateProduct
+from crud.product import get_products  
 
 router = APIRouter()
 
 @router.get("/products", response_model=list[CreateProduct])
-async def get_all_products(db: Session = Depends(get_db)):
+async def get_all_products(db=Depends(get_mongo_db)):  
     products = get_products(db)
-    return products
+    for product in products:
+        product["_id"] = str(product["_id"])
+        if "producer_id" in product:
+            product["producer_id"] = str(product["producer_id"])  
+
+    return [CreateProduct(**product) for product in products]
