@@ -8,7 +8,7 @@ ph = PasswordHasher()
 
 def createUser(db: Session, user: UserCreate):
     hashed_password = ph.hash(user.password)
-    new_user = User(email=user.email, password_hash=hashed_password)
+    new_user = User(email=user.email, password_hash=hashed_password, role=user.role)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
