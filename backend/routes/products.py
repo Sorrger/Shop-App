@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from database.mongo import get_mongo_db
 from schemas.product import CreateProduct
-from crud.product import get_products  
+from crud.product import get_product_by_id, get_products  
 
 router = APIRouter()
 
@@ -14,3 +14,18 @@ async def get_all_products(db=Depends(get_mongo_db)):
             product["producer_id"] = str(product["producer_id"])  
 
     return [CreateProduct(**product) for product in products]
+
+@router.get("/products/{id}", response_model=CreateProduct)
+async def get_product(id: str, db=Depends(get_mongo_db)):  
+    product = get_product_by_id(id, db)
+    
+    if not product:
+        raise HTTPException(status_code=404, detail="Produkt nie znaleziony")
+
+    if isinstance(product.get('producer_id'), int):
+        product['producer_id'] = str(product['producer_id'])
+    
+    return CreateProduct(**product)
+
+
+

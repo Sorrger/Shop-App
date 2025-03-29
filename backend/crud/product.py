@@ -1,6 +1,6 @@
-from database.mongo import get_mongo_db
 from bson import ObjectId
 
+# === CREATE ===
 def add_product(product_data: dict, db):
     result = db.products.insert_one(product_data)
     return str(result.inserted_id) 
@@ -19,6 +19,7 @@ def get_product_by_id(product_id: str, db):
             raise ValueError(f"Product with id {product_id} does not exist.")
     except Exception as e:
         raise ValueError(f"Invalid product ID format: {product_id}")
+
 
 # === UPDATE ===
 def update_product(product_id: str, update_data: dict, db):

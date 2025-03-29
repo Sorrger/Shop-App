@@ -5,5 +5,4 @@ class Producer(Base):
     __tablename__ = "producers"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, nullable=False)
-    country = Column(String, nullable=True)
+    name = Column(String(255), unique=True, nullable=False)
